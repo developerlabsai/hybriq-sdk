@@ -29,10 +29,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
-
-      - name: Run unit tests
+      - name: Run unit + contract tests
         run: npm test
 
       - name: Run smoke tests
@@ -55,7 +52,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests with coverage
+      - name: Run tests with coverage (threshold enforced)
         run: npm run test:coverage
 
       - name: Upload coverage
@@ -65,8 +62,8 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  lint:
-    name: Typecheck
+  build-verify:
+    name: Build & Pack Verify
     runs-on: ubuntu-latest
 
     steps:
@@ -81,5 +78,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Typecheck
+      - name: TypeScript build (strict mode)
         run: npm run build
+
+      - name: Verify npm pack (dry-run)
+        run: npm pack --dry-run 2>&1 | tee pack-output.txt
+
+      - name: Verify only dist/ is included
+        run: |
+          if grep -E '(src/|tests/|\.env)' pack-output.txt; then
+            echo "ERROR: Source files or secrets detected in pack output"
+            exit 1
+          fi
+          echo "Pack verification passed — only dist/ included"
