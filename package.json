@@ -1,0 +1,59 @@
+{
+  "name": "@hybriq/sdk",
+  "version": "0.1.0",
+  "description": "HybrIQ SDK — Cache-wrapped LLM execution with federated library and billing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "bin": {
+    "hybriq": "dist/cli/stats.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:smoke": "vitest run --config vitest.smoke.config.ts",
+    "test:all": "vitest run && vitest run --config vitest.smoke.config.ts",
+    "test:ci": "vitest run --coverage --reporter=junit --outputFile=test-results.xml",
+    "prerelease": "npm run clean && npm run build && npm run test:all && npm run test:coverage && echo '✓ All checks passed — ready to publish'"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.80.0",
+    "openai": ">=6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": {
+      "optional": true
+    },
+    "openai": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "msw": "^2.12.14",
+    "openai": "^6.32.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@noble/ed25519": "^3.0.1",
+    "sql.js": "^1.14.1",
+    "tar": "^7.5.12"
+  }
+}
